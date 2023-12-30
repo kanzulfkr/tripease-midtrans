@@ -2,8 +2,10 @@
 $server_key = "SB-Mid-server-Pfyvfrks-KFQAalvQjOt6BWS";
 $is_production = false;
 $api_url = $is_production ?
-    'https://app.midtrans.com/snap/v1/transactions' : 'https://app.sandbox.midtrans.com/snap/v1/transactions';
-if (!strpos($_SERVER['REQUEST_URL'], '/charge')) {
+    'https://app.midtrans.com/snap/v1/transactions' :
+    'https://app.sandbox.midtrans.com/snap/v1/transactions';
+
+if (!strpos($_SERVER['REQUEST_URI'], '/charge')) {
     http_response_code(404);
     echo "Wrong path, make sure it's '/charge'";
     exit();
@@ -12,6 +14,7 @@ if (!strpos($_SERVER['REQUEST_URL'], '/charge')) {
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(404);
     echo "Page not found or wrong HTTP Request method is used";
+    exit();
 }
 
 $request_body = file_get_contents('php://input');
@@ -25,7 +28,8 @@ function chargerAPI($api_url, $server_key, $request_body)
 {
     $ch = curl_init();
     $curl_options = array(
-        CURLOPT_URL => $api_url, CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_URL => $api_url,
+        CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_POST => 1,
         CURLOPT_HEADER => 0,
 
